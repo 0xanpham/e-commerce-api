@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import { jwtSecret } from "../config/env";
 import bcrypt from "bcrypt";
+import { IUser } from "../models/user";
+import _ from "lodash";
 
 const saltRounds = 10;
 
@@ -16,8 +18,8 @@ async function comparePassword(
   return bcrypt.compare(password, hashedPassword);
 }
 
-function createToken(username: string, role: string): string {
-  const token = jwt.sign({ username, role }, jwtSecret, {
+function createToken(user: IUser): string {
+  const token = jwt.sign(_.omit(user, ["password"]), jwtSecret, {
     expiresIn: 60 * 60,
   });
   return token;

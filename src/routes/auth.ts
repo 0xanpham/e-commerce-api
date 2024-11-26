@@ -12,7 +12,7 @@ authRouter.post(
     try {
       const { username, password, role } = req.body;
       const user = await createUser(username, password, role);
-      const accessToken = createToken(user.username, user.role);
+      const accessToken = createToken(user);
       res.status(201).json({ accessToken });
     } catch {
       res.status(500).json({ message: "Internal server error" });
@@ -34,7 +34,7 @@ authRouter.post(
       if (!match) {
         throw new Error("Wrong password");
       }
-      const accessToken = createToken(user.username, user.role);
+      const accessToken = createToken(user);
       res.status(201).json({ accessToken });
     } catch (error: any) {
       if (error.message) {
