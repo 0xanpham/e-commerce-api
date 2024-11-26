@@ -1,24 +1,47 @@
 import express, { Request, Response } from "express";
-import { createUser } from "../services/user";
-import { validateNewUser } from "../middlewares/auth";
+import { createUser, findUser } from "../services/user";
+import { validateSignInDto, validateSignUpDto } from "../middlewares/auth";
+import { comparePassword, createToken } from "../services/auth";
 
 const authRouter = express.Router();
 
 authRouter.post(
   "/sign-up",
-  validateNewUser,
+  validateSignUpDto,
+  async (req: Request, res: Response) => {
+    try {
+      const { username, password, role } = req.body;
+      const user = await createUser(username, password, role);
+      const accessToken = createToken(user.username, user.role);
+      res.status(201).json({ accessToken });
+    } catch {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
+authRouter.post(
+  "/sign-in",
+  validateSignInDto,
   async (req: Request, res: Response) => {
     try {
       const { username, password } = req.body;
-      if (!username || !password) {
-        res
-          .status(400)
-          .json({ message: "Username and password must not be empty" });
+      const user = await findUser(username);
+      if (!user) {
+        throw new Error("User does not exist");
       }
-      const user = await createUser(username, password);
-      res.status(201).json(user);
-    } catch {
-      res.status(500).json({ message: "Internal server error" });
+      const match = await comparePassword(password, user.password);
+      if (!match) {
+        throw new Error("Wrong password");
+      }
+      const accessToken = createToken(user.username, user.role);
+      res.status(201).json({ accessToken });
+    } catch (error: any) {
+      if (error.message) {
+        res.status(401).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Internal server error" });
+      }
     }
   }
 );

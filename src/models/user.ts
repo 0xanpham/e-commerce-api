@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+export enum Role {
+  Seller = "Seller",
+  Buyer = "Buyer",
+}
+
+export interface IUser {
+  username: string;
+  password: string;
+  role: string;
+}
+
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -8,6 +19,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
     },
     password: {
+      type: String,
+      required: true,
+    },
+    role: {
       type: String,
       required: true,
     },
