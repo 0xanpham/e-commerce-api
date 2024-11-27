@@ -1,92 +1,89 @@
 import { NextFunction, Request, Response } from "express";
-import { mixed, object, string, ValidationError } from "yup";
 import { verifyToken } from "../services/auth";
 import { Role } from "../models/user";
+import { HttpException } from "../exceptions/exception";
+import { validateSignInDto, validateSignUpDto } from "../services/dto";
 
-const signUpSchema = object({
-  username: string()
-    .min(6)
-    .max(20)
-    .required()
-    .matches(
-      /^[a-zA-Z0-9_]*$/,
-      "Username must contain alphanumeric characters"
-    ),
-  password: string()
-    .min(6)
-    .max(20)
-    .required()
-    .matches(
-      /^[a-zA-Z0-9_]*$/,
-      "Password must contain alphanumeric characters"
-    ),
-  role: mixed<Role>().oneOf(Object.values(Role), "Invalid role"),
-});
-
-const signInSchema = object({
-  username: string()
-    .min(6)
-    .max(20)
-    .required()
-    .matches(
-      /^[a-zA-Z0-9_]*$/,
-      "Username must contain alphanumeric characters"
-    ),
-  password: string()
-    .min(6)
-    .max(20)
-    .required()
-    .matches(
-      /^[a-zA-Z0-9_]*$/,
-      "Password must contain alphanumeric characters"
-    ),
-});
-
-async function validateSignUpDto(
+async function signUpMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    req.body = await signUpSchema.validate(req.body);
+    await validateSignUpDto(req.body);
     next();
-  } catch (error: any) {
-    if (error instanceof ValidationError) {
-      res.status(400).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: "Internal server error" });
-    }
+  } catch (error) {
+    next(error);
   }
 }
 
-async function validateSignInDto(
+async function signInMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    req.body = await signInSchema.validate(req.body);
+    await validateSignInDto(req.body);
     next();
-  } catch (error: any) {
-    if (error instanceof ValidationError) {
-      res.status(400).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: "Internal server error" });
-    }
+  } catch (error) {
+    next(error);
   }
 }
 
-async function validateToken(req: Request, res: Response, next: NextFunction) {
+async function tokenMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const token = req.headers.authorization;
     if (!token) {
-      throw new Error("Unauthenticated request");
+      throw new HttpException(401, "Unauthenticated request");
     }
-    verifyToken(token);
+    const user = verifyToken(token);
+    req.body.user = user;
     next();
-  } catch {
-    res.status(401).json({ message: "Unauthenticated request" });
+  } catch (error) {
+    next(error);
   }
 }
 
-export { validateSignUpDto, validateSignInDto, validateToken };
+async function buyerMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const role = req.body.user.role;
+    if (role !== Role.Buyer) {
+      throw new HttpException(403, "Unauthorized request");
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function sellerMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const role = req.body.user.role;
+    if (role !== Role.Seller) {
+      throw new HttpException(403, "Unauthorized request");
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
+export {
+  signUpMiddleware,
+  signInMiddleware,
+  tokenMiddleware,
+  buyerMiddleware,
+  sellerMiddleware,
+};

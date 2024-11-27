@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import { jwtSecret } from "../config/env";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { jwtSecret } from "../config/config";
 import bcrypt from "bcrypt";
 import { IUser } from "../models/user";
 import _ from "lodash";
@@ -25,8 +25,12 @@ function createToken(user: IUser): string {
   return token;
 }
 
-function verifyToken(token: string) {
-  const user = jwt.verify(token, jwtSecret);
+function verifyToken(token: string): IUser {
+  const payload = jwt.verify(token, jwtSecret) as JwtPayload;
+  const user: IUser = {
+    username: payload.username,
+    role: payload.role,
+  };
   return user;
 }
 
