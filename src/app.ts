@@ -4,6 +4,7 @@ import authRouter from "./routes/auth";
 import logger from "./utils/logger";
 import mongoose from "mongoose";
 import { dbURI } from "./config/config";
+import productRouter from "./routes/product";
 
 export class App {
   public app: Express;
@@ -15,6 +16,7 @@ export class App {
     this.port = port;
     this.app.use(express.json());
     this.app.use("/auth", authRouter);
+    this.app.use("/product", productRouter);
     this.app.use(errorMiddleware);
   }
 

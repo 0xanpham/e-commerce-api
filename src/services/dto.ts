@@ -1,4 +1,4 @@
-import { mixed, object, string, ValidationError } from "yup";
+import { array, mixed, number, object, string, ValidationError } from "yup";
 import { Role } from "../models/user";
 import { HttpException } from "../exceptions/exception";
 
@@ -41,6 +41,17 @@ const signInSchema = object({
     ),
 });
 
+const productSchema = object({
+  name: string()
+    .min(6)
+    .max(20)
+    .matches(/^[A-Za-z\s]+$/, "Name can only contain alphabets and spaces")
+    .required("Name is required"),
+  price: number().min(1).required("Price is required"),
+  description: string().max(200),
+  images: array(string().url()).max(8),
+});
+
 async function validateSignUpDto(dto: any) {
   try {
     await signUpSchema.validate(dto);
@@ -65,4 +76,16 @@ async function validateSignInDto(dto: any) {
   }
 }
 
-export { validateSignUpDto, validateSignInDto };
+async function validateProductDto(dto: any) {
+  try {
+    await productSchema.validate(dto);
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      throw new HttpException(400, error.message);
+    } else {
+      throw error;
+    }
+  }
+}
+
+export { validateSignUpDto, validateSignInDto, validateProductDto };

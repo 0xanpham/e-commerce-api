@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 export enum Role {
-  Seller = "Seller",
-  Buyer = "Buyer",
+  Admin = "Admin",
+  Customer = "Customer",
 }
 
 export interface IUser {

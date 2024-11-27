@@ -1,3 +1,4 @@
+import { HttpException } from "../exceptions/exception";
 import { IUser, Role, User } from "../models/user";
 import logger from "../utils/logger";
 import { hashPassword } from "./auth";
@@ -11,7 +12,7 @@ async function createUser(
   const user = new User({
     username,
     password: hashedPassword,
-    role: role || Role.Buyer,
+    role: role || Role.Customer,
   });
   const newUser = await user.save();
   logger.info(`User ${username} created successfully`);
@@ -21,7 +22,7 @@ async function createUser(
 async function findUser(username: string): Promise<IUser> {
   const user = await User.findOne({ username });
   if (!user) {
-    throw new Error("User does not exist");
+    throw new HttpException(404, "User does not exist");
   }
   return user.toObject();
 }

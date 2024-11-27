@@ -48,14 +48,14 @@ async function tokenMiddleware(
   }
 }
 
-async function buyerMiddleware(
+async function customerMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
     const role = req.body.user.role;
-    if (role !== Role.Buyer) {
+    if (role !== Role.Customer) {
       throw new HttpException(403, "Unauthorized request");
     }
     next();
@@ -64,14 +64,14 @@ async function buyerMiddleware(
   }
 }
 
-async function sellerMiddleware(
+async function adminMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
     const role = req.body.user.role;
-    if (role !== Role.Seller) {
+    if (role !== Role.Admin) {
       throw new HttpException(403, "Unauthorized request");
     }
     next();
@@ -84,6 +84,6 @@ export {
   signUpMiddleware,
   signInMiddleware,
   tokenMiddleware,
-  buyerMiddleware,
-  sellerMiddleware,
+  customerMiddleware,
+  adminMiddleware,
 };
