@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import { dbURI } from "./config/config";
 import productRouter from "./routes/product";
 import cors from "cors";
+import paymentRouter from "./routes/payment";
 
 export class App {
   public app: Express;
@@ -19,6 +20,10 @@ export class App {
     this.app.use(express.json());
     this.app.use("/auth", authRouter);
     this.app.use("/product", productRouter);
+    this.app.use("/payment", paymentRouter);
+    this.app.get("/", (req, res) => {
+      res.status(200).send("Purchased successfully");
+    });
     this.app.use(errorMiddleware);
   }
 

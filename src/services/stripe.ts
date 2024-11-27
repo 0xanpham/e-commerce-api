@@ -26,4 +26,18 @@ async function getProducts(limit = 10, active = true) {
   return stripe.products.list({ limit, active });
 }
 
-export { createProduct, getProducts };
+async function createCheckoutSession(priceId: string, quantity: number) {
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price: priceId,
+        quantity,
+      },
+    ],
+    mode: "payment",
+    success_url: "http://localhost:3000",
+  });
+  return session;
+}
+
+export { createProduct, getProducts, createCheckoutSession };
