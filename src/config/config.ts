@@ -5,3 +5,4 @@ dotenv.config();
 export const jwtSecret = process.env.JWT_SECRET || "";
 export const dbURI = process.env.MONGO_URI || "";
 export const stripeSecretKey = process.env.STRIPE_SECRET_KEY || "";
+export const webhookEndpointSecret = process.env.WEBHOOK_ENDPOINT_SECRET || "";
