@@ -28,7 +28,11 @@ async function getProducts(limit = 10, active = true) {
   return stripe.products.list({ limit, active });
 }
 
-async function createCheckoutSession(priceId: string, quantity: number) {
+async function createCheckoutSession(
+  userId: string,
+  priceId: string,
+  quantity: number
+) {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -38,6 +42,7 @@ async function createCheckoutSession(priceId: string, quantity: number) {
     ],
     mode: "payment",
     success_url: "http://localhost:3000",
+    client_reference_id: userId,
   });
   return session;
 }
@@ -57,7 +62,7 @@ async function fulfillCheckout(sessionId: string) {
   });
 
   if (checkoutSession.payment_status !== "unpaid") {
-    logger.info("Save payment");
+    logger.info(`Save payment for user ${checkoutSession.client_reference_id}`);
     const newPayment = new Payment({
       sessionId,
       customer: checkoutSession.customer_details,
