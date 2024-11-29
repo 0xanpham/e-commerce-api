@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { stripeSecretKey } from "../config/config";
 import logger from "../utils/logger";
 import { Payment } from "../models/payment";
+import { HttpException } from "../exceptions/exception";
 
 const stripe = new Stripe(stripeSecretKey);
 
@@ -33,18 +34,22 @@ async function createCheckoutSession(
   priceId: string,
   quantity: number
 ) {
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        price: priceId,
-        quantity,
-      },
-    ],
-    mode: "payment",
-    success_url: "http://localhost:3000",
-    client_reference_id: userId,
-  });
-  return session;
+  try {
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price: priceId,
+          quantity,
+        },
+      ],
+      mode: "payment",
+      success_url: "http://localhost:3000",
+      client_reference_id: userId,
+    });
+    return session;
+  } catch (error: any) {
+    throw new HttpException(500, error.message, error);
+  }
 }
 
 async function fulfillCheckout(sessionId: string) {

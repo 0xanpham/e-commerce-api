@@ -17,7 +17,7 @@ paymentRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { user, priceId, quantity } = req.body;
-      const session = await createCheckoutSession(user.id, priceId, quantity);
+      const session = await createCheckoutSession(user._id, priceId, quantity);
       if (!session.url) throw new Error("Null stripe session url");
       res.status(200).json({ session });
     } catch (error) {

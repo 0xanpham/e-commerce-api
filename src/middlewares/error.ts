@@ -10,7 +10,7 @@ function errorMiddleware(
 ) {
   logger.error(error.stack);
   const status = error.status ? error.status : 500;
-  const message = status === 500 ? "Internal server error" : error.message;
+  const message = error.message || "Internal server error";
   const errors = error.error;
   res.status(status).json({ status, message, error: errors });
 }

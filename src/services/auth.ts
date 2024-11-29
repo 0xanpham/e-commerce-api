@@ -30,6 +30,7 @@ function verifyToken(token: string): IUser {
   const user: IUser = {
     username: payload.username,
     role: payload.role,
+    _id: payload._id,
   };
   return user;
 }

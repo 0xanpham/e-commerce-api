@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Document, Types } from "mongoose";
 
 function unless(path: string, middleware: any) {
   return function (req: Request, res: Response, next: NextFunction) {
@@ -10,4 +11,12 @@ function unless(path: string, middleware: any) {
   };
 }
 
-export { unless };
+function docToPlainObj(doc: Document) {
+  let obj = doc.toObject();
+  if (obj._id && obj._id instanceof Types.ObjectId) {
+    obj = { ...obj, _id: obj._id.toString() };
+  }
+  return obj;
+}
+
+export { unless, docToPlainObj };

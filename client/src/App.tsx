@@ -25,6 +25,18 @@ const App: React.FC = () => {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = localStorage.getItem("token");
+      console.log("Fetch token", token);
+      if (token) {
+        setToken(token);
+        setIsLoggedIn(true);
+      }
+    };
+    fetchToken();
+  }, []);
+
   // Handle login
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +46,7 @@ const App: React.FC = () => {
       password,
     });
     setToken(response.data.accessToken);
+    localStorage.setItem("token", response.data.accessToken);
     setIsLoggedIn(true);
   };
 
@@ -55,7 +68,7 @@ const App: React.FC = () => {
     );
     const session = response.data.session;
     console.log("Session res", response);
-    window.location.href = session.url;
+    // window.location.href = session.url;
   };
 
   return (
