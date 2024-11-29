@@ -68,7 +68,7 @@ const App: React.FC = () => {
     );
     const session = response.data.session;
     console.log("Session res", response);
-    // window.location.href = session.url;
+    window.location.href = session.url;
   };
 
   return (
