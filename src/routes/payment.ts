@@ -19,7 +19,8 @@ paymentRouter.post(
       const { user, priceId, quantity } = req.body;
       const session = await createCheckoutSession(user.id, priceId, quantity);
       if (!session.url) throw new Error("Null stripe session url");
-      res.status(303).redirect(session.url);
+      // res.status(303).redirect(session.url);
+      res.status(200).json({ session });
     } catch (error) {
       next(error);
     }

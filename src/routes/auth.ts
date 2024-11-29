@@ -40,7 +40,7 @@ authRouter.post(
         throw new HttpException(400, "Wrong password");
       }
       const accessToken = createToken(user);
-      res.status(201).json({ accessToken });
+      res.status(200).json({ accessToken });
     } catch (error) {
       next(error);
     }
