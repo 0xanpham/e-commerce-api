@@ -40,7 +40,7 @@ export class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-      logger.info(`Server is running at http://localhost:${this.port}!`);
+      logger.info(`Server is running at http://localhost:${this.port}.....`);
     });
   }
 }
