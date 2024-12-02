@@ -2,33 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { verifyToken } from "../services/auth";
 import { Role } from "../models/user";
 import { HttpException } from "../exceptions/exception";
-import { validateSignInDto, validateSignUpDto } from "../services/dto";
-
-async function signUpMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    await validateSignUpDto(req.body);
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function signInMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    await validateSignInDto(req.body);
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
 
 async function tokenMiddleware(
   req: Request,
@@ -80,10 +53,4 @@ async function adminMiddleware(
   }
 }
 
-export {
-  signUpMiddleware,
-  signInMiddleware,
-  tokenMiddleware,
-  customerMiddleware,
-  adminMiddleware,
-};
+export { tokenMiddleware, customerMiddleware, adminMiddleware };

@@ -1,7 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
 import { adminMiddleware, tokenMiddleware } from "../middlewares/auth";
-import { validateProductDto } from "../services/dto";
 import { createProduct, getProducts } from "../services/stripe";
+import { dtoValidationMiddleware } from "../middlewares/dto";
+import { productSchema } from "../schemas/dto";
 
 const productRouter = express.Router();
 
@@ -9,9 +10,9 @@ productRouter.post(
   "/create",
   tokenMiddleware,
   adminMiddleware,
+  dtoValidationMiddleware(productSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await validateProductDto(req.body);
       const { name, price, description, images } = req.body;
       const product = await createProduct(name, price, description, images);
       res.status(200).json({ product });

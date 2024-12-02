@@ -1,14 +1,15 @@
 import express, { NextFunction, Request, Response } from "express";
 import { createUser, findUser } from "../services/user";
-import { signInMiddleware, signUpMiddleware } from "../middlewares/auth";
 import { comparePassword, createToken } from "../services/auth";
 import { HttpException } from "../exceptions/exception";
+import { dtoValidationMiddleware } from "../middlewares/dto";
+import { signInSchema, signUpSchema } from "../schemas/dto";
 
 const authRouter = express.Router();
 
 authRouter.post(
   "/sign-up",
-  signUpMiddleware,
+  dtoValidationMiddleware(signUpSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { username, password, role } = req.body;
@@ -27,7 +28,7 @@ authRouter.post(
 
 authRouter.post(
   "/sign-in",
-  signInMiddleware,
+  dtoValidationMiddleware(signInSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { username, password } = req.body;
