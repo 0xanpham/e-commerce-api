@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon src/index.ts",
-    "build": "cp .env ./dist/.env && rm -r dist && npx tsc",
+    "build": "rm -r dist && npx tsc && cp .env ./dist/.env",
     "start": "node dist/src/index.js",
     "test": "jest"
   },
