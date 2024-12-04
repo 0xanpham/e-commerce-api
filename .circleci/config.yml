@@ -20,9 +20,9 @@ jobs:
       - run: ssh -oStrictHostKeyChecking=no -v $USER@$DNS "./deploy.sh"
 
 workflows:
-  deploy-to-ec2:
+  test-and-deploy-to-ec2:
     jobs:
       - test
       - deploy:
-        requires:
-          - test
+          requires:
+            - test
