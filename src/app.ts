@@ -22,13 +22,16 @@ export class App {
     this.app.use("/auth", authRouter);
     this.app.use("/product", productRouter);
     this.app.use("/payment", paymentRouter);
-    this.app.get("/", (req, res) => {
-      res.status(200).send("Purchased successfully");
+    this.app.get("/health", (req, res) => {
+      res.status(200).send("Server is running");
     });
     this.app.use(errorMiddleware);
   }
 
   private async connectDB() {
+    if (process.env.NODE_ENV == "test") {
+      return;
+    }
     try {
       await mongoose.connect(dbURI);
       logger.info("Connect DB successfully");
@@ -39,8 +42,8 @@ export class App {
   }
 
   public listen() {
-    this.app.listen(this.port, () => {
-      logger.info(`Server is running at http://localhost:${this.port}.....`);
+    return this.app.listen(this.port, () => {
+      logger.info(`Server is running at port ${this.port}`);
     });
   }
 }

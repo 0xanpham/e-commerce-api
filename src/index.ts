@@ -7,4 +7,8 @@ const port = process.env.PORT || "3000";
 
 const app = new App(parseInt(port));
 
-app.listen();
+if (process.env.NODE_ENV !== "test") {
+  app.listen();
+}
+
+export { app };
