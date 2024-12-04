@@ -4,9 +4,8 @@ import { Server } from "http";
 
 let server: Server;
 
-describe("Test", function () {
+describe("Testing rest api", function () {
   beforeAll((done) => {
-    // Start the server if necessary
     server = app.listen();
     done();
   });
@@ -18,7 +17,6 @@ describe("Test", function () {
   });
 
   afterAll((done) => {
-    // Close the server after the tests
     server.close();
     done();
   });
