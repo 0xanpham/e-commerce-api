@@ -67,7 +67,9 @@ async function fulfillCheckout(sessionId: string) {
   });
 
   if (checkoutSession.payment_status !== "unpaid") {
-    logger.info(`Save payment for user ${checkoutSession.client_reference_id}`);
+    logger.info(
+      `Save payment for user with id ${checkoutSession.client_reference_id}`
+    );
     const newPayment = new Payment({
       sessionId,
       customer: checkoutSession.customer_details,
