@@ -13,7 +13,7 @@ describe("Testing rest api", function () {
   it("Get /health", async function () {
     const response = await request(app.app).get("/health");
     expect(response.status).toBe(200);
-    expect(response.text).toEqual("Server is running");
+    expect(response.text).toEqual("Server is healthy");
   });
 
   afterAll((done) => {

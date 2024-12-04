@@ -23,7 +23,7 @@ export class App {
     this.app.use("/product", productRouter);
     this.app.use("/payment", paymentRouter);
     this.app.get("/health", (req, res) => {
-      res.status(200).send("Server is running");
+      res.status(200).send("Server is healthy");
     });
     this.app.use(errorMiddleware);
   }
