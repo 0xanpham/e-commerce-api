@@ -1,4 +1,3 @@
-import { HttpException } from "../exceptions/exception";
 import { IUser, Role, User } from "../models/user";
 import { docToPlainObj } from "../utils/helper";
 import logger from "../utils/logger";
@@ -20,10 +19,10 @@ async function createUser(
   return docToPlainObj(newUser);
 }
 
-async function findUser(username: string): Promise<IUser> {
+async function findUser(username: string): Promise<IUser | null> {
   const user = await User.findOne({ username });
   if (!user) {
-    throw new HttpException(404, "User does not exist");
+    return null;
   }
   return docToPlainObj(user);
 }
