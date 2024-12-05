@@ -30,7 +30,7 @@ paymentRouter.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   async (req: Request, res: Response) => {
-    logger.info("Webhook called");
+    logger.info("Payment webhook called");
     const payload = req.body;
     const sig = req.headers["stripe-signature"];
 
