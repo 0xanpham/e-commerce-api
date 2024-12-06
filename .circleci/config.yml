@@ -3,11 +3,9 @@ version: 2.1
 jobs:
   test:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2004:2024.11.01
     steps:
       - checkout
-      - run: curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash -
-      - run: sudo apt-get install -y nodejs
       - run: node -v && npm -v
       - run: npm install
       - run: STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY JWT_SECRET=secret npm test
