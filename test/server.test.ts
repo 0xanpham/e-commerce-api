@@ -181,6 +181,7 @@ describe("Inventory", function () {
   beforeAll(async () => {
     await updateInventory(user._id!, "product_id_0", 10);
     await updateInventory(user._id!, "product_id_1", 20);
+    await updateInventory(user._id!, "product_id_0", 30);
   });
 
   it("Get user inventories", async function () {
@@ -191,7 +192,7 @@ describe("Inventory", function () {
     expect(jsonResponse.inventories[0]).toMatchObject<Partial<IInventory>>({
       userId: user._id!,
       productId: "product_id_0",
-      quantity: 10,
+      quantity: 40,
     });
     const newId = new mongoose.Types.ObjectId().toString();
     response = await request(app.app).get(`/inventory/${newId}`);
