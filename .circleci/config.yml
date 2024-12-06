@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   test:
     machine:
-      image: ubuntu-2004:2024.11.01
+      image: ubuntu-2004:edge
     steps:
       - checkout
       - run: node -v && npm -v
