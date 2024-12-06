@@ -3,6 +3,8 @@ import { stripeSecretKey } from "../config/config";
 import logger from "../utils/logger";
 import { Payment } from "../models/payment";
 import { HttpException } from "../exceptions/exception";
+import { updateInventory } from "./inventory";
+import { ClientSession } from "mongoose";
 
 const stripe = new Stripe(stripeSecretKey);
 
@@ -52,9 +54,9 @@ async function createCheckoutSession(
   }
 }
 
-async function fulfillCheckout(sessionId: string) {
+async function fulfillCheckout(sessionId: string, session?: ClientSession) {
   logger.info("Fulfilling Checkout Session " + sessionId);
-  const payment = await Payment.findOne({ sessionId });
+  const payment = await Payment.findOne({ sessionId }, undefined, { session });
   if (payment) {
     logger.info("Payment already fulfilled");
     return;
@@ -74,8 +76,15 @@ async function fulfillCheckout(sessionId: string) {
       sessionId,
       customer: checkoutSession.customer_details,
       lineItems: checkoutSession.line_items,
+      userId: checkoutSession.client_reference_id,
     });
-    await newPayment.save();
+    await newPayment.save({ session });
+    await updateInventory(
+      checkoutSession.client_reference_id || "",
+      checkoutSession.line_items?.data[0].price?.product.toString() || "",
+      checkoutSession.line_items?.data[0].quantity || 0,
+      session
+    );
   }
 }
 

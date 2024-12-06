@@ -8,11 +8,14 @@ import {
 import mongoose from "mongoose";
 import { verifyToken } from "../src/services/auth";
 import { IUser, Role } from "../src/models/user";
+import { updateInventory } from "../src/services/inventory";
+import { IInventory } from "../src/models/inventory";
 
 let server: Server;
 let app: App;
 let mongodbContainer: StartedMongoDBContainer;
 let token: string;
+let user: IUser;
 
 jest.setTimeout(120 * 1000);
 
@@ -166,9 +169,33 @@ describe("Sign in", function () {
     let jsonResponse = JSON.parse(response.text);
     token = jsonResponse.accessToken;
     expect(token).not.toBeNull();
-    expect(verifyToken(token)).toMatchObject<IUser>({
+    user = verifyToken(token);
+    expect(user).toMatchObject<IUser>({
       username: "joerogan",
       role: Role.Customer,
     });
+  });
+});
+
+describe("Inventory", function () {
+  beforeAll(async () => {
+    await updateInventory(user._id!, "product_id_0", 10);
+    await updateInventory(user._id!, "product_id_1", 20);
+  });
+
+  it("Get user inventories", async function () {
+    let response = await request(app.app).get(`/inventory/${user._id}`);
+    expect(response.status).toBe(200);
+    let jsonResponse = JSON.parse(response.text);
+    expect(jsonResponse.inventories).toHaveLength(2);
+    expect(jsonResponse.inventories[0]).toMatchObject<Partial<IInventory>>({
+      userId: user._id!,
+      productId: "product_id_0",
+      quantity: 10,
+    });
+    const newId = new mongoose.Types.ObjectId().toString();
+    response = await request(app.app).get(`/inventory/${newId}`);
+    jsonResponse = JSON.parse(response.text);
+    expect(jsonResponse.inventories).toHaveLength(0);
   });
 });

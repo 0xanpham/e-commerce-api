@@ -7,6 +7,7 @@ import {
 import { webhookEndpointSecret } from "../config/config";
 import logger from "../utils/logger";
 import { customerMiddleware, tokenMiddleware } from "../middlewares/auth";
+import mongoose from "mongoose";
 
 const paymentRouter = express.Router();
 
@@ -45,7 +46,14 @@ paymentRouter.post(
       event?.type === "checkout.session.completed" ||
       event?.type === "checkout.session.async_payment_succeeded"
     ) {
-      fulfillCheckout(event.data.object.id);
+      const session = await mongoose.startSession();
+      session.startTransaction();
+      try {
+        fulfillCheckout(event.data.object.id, session);
+        await session.commitTransaction();
+      } catch {
+        await session.abortTransaction();
+      }
     }
 
     res.status(200).end();

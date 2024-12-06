@@ -7,6 +7,7 @@ import productRouter from "./routes/product";
 import cors from "cors";
 import paymentRouter from "./routes/payment";
 import { unless } from "./utils/helper";
+import inventoryRouter from "./routes/inventory";
 
 export class App {
   public app: Express;
@@ -21,6 +22,7 @@ export class App {
     this.app.use("/auth", authRouter);
     this.app.use("/product", productRouter);
     this.app.use("/payment", paymentRouter);
+    this.app.use("/inventory", inventoryRouter);
     this.app.get("/health", (req, res) => {
       res.status(200).send("Server is healthy");
     });
