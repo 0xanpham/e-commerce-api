@@ -6,12 +6,15 @@ jobs:
       image: ubuntu-2004:current
     steps:
       - checkout
+      - run: sudo systemctl status docker
+      - run: sudo systemctl start docker
+      - run: sudo systemctl status docker
       - run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
       - run: source ~/.bashrc
       - run: nvm install 22.11
+      - run: nvm use 22.11
       - run: node -v && npm -v
       - run: npm install
-      - run: sudo systemctl start docker
       - run: STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY npm test
 
   deploy:
