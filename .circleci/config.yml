@@ -6,13 +6,9 @@ jobs:
       image: ubuntu-2004:current
     steps:
       - checkout
-      - run: sudo gpasswd -a $USER docker && sudo service docker restart
-      - run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
-      - run: source ~/.bashrc
-      - run: nvm install 22.11
       - run: node -v && npm -v
       - run: npm install
-      - run: STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY npm test
+      - run: STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY JWT_SECRET=secret npm test
 
   deploy:
     docker:
