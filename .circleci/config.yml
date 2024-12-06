@@ -8,9 +8,10 @@ jobs:
       - checkout
       - run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
       - run: source ~/.bashrc
-      - run: nvm install 22
+      - run: nvm install 22.11
       - run: node -v && npm -v
       - run: npm install
+      - run: sudo systemctl start docker
       - run: STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY npm test
 
   deploy:
