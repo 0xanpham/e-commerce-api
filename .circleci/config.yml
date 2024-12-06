@@ -2,20 +2,14 @@ version: 2.1
 
 jobs:
   test:
-    docker:
-      - image: cimg/base:2024.12
+    machine:
+      image: ubuntu-2004:current
     steps:
       - checkout
-      - run: sudo apt update
-      - run: sudo apt install apt-transport-https ca-certificates curl software-properties-common
-      - run: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-      - run: sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
-      - run: apt-cache policy docker-ce
-      - run: sudo apt install docker-ce
-      - run: sudo systemctl status docker
-      - run: curl -fsSL https://deb.nodesource.com/setup_22.11 | sudo -E bash -
-      - run: sudo apt install -y nodejs
-      - run: node -v
+      - run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+      - run: source ~/.bashrc
+      - run: nvm install 22
+      - run: node -v && npm -v
       - run: npm install
       - run: STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY npm test
 
