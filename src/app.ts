@@ -3,7 +3,6 @@ import { errorMiddleware } from "./middlewares/error";
 import authRouter from "./routes/auth";
 import logger from "./utils/logger";
 import mongoose from "mongoose";
-import { dbURI } from "./config/config";
 import productRouter from "./routes/product";
 import cors from "cors";
 import paymentRouter from "./routes/payment";
@@ -13,8 +12,8 @@ export class App {
   public app: Express;
   public port: number;
 
-  constructor(port: number) {
-    this.connectDB();
+  constructor(port: number, dbURI: string) {
+    this.connectDB(dbURI);
     this.app = express();
     this.port = port;
     this.app.use(cors());
@@ -28,10 +27,7 @@ export class App {
     this.app.use(errorMiddleware);
   }
 
-  private async connectDB() {
-    if (process.env.NODE_ENV == "test") {
-      return;
-    }
+  async connectDB(dbURI: string) {
     try {
       await mongoose.connect(dbURI);
       logger.info("Connect DB successfully");

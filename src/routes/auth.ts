@@ -15,7 +15,7 @@ authRouter.post(
       const { username, password, role } = req.body;
       const exist = await findUser(username);
       if (exist) {
-        throw new HttpException(400, "User is already existed");
+        throw new HttpException(400, "user is already existed");
       }
       const user = await createUser(username, password, role);
       const accessToken = createToken(user);
@@ -34,11 +34,11 @@ authRouter.post(
       const { username, password } = req.body;
       const user = await findUser(username);
       if (!user) {
-        throw new HttpException(400, "User does not exist");
+        throw new HttpException(400, "user does not exist");
       }
       const match = await comparePassword(password, user.password!);
       if (!match) {
-        throw new HttpException(400, "Wrong password");
+        throw new HttpException(400, "wrong password");
       }
       const accessToken = createToken(user);
       res.status(200).json({ accessToken });

@@ -8,7 +8,7 @@ const signUpSchema = object({
     .required()
     .matches(
       /^[a-zA-Z0-9_]*$/,
-      "Username must contain alphanumeric characters"
+      "username must contain alphanumeric characters"
     ),
   password: string()
     .min(6)
@@ -16,9 +16,9 @@ const signUpSchema = object({
     .required()
     .matches(
       /^[a-zA-Z0-9_]*$/,
-      "Password must contain alphanumeric characters"
+      "password must contain alphanumeric characters"
     ),
-  role: mixed<Role>().oneOf(Object.values(Role), "Invalid role"),
+  role: mixed<Role>().oneOf(Object.values(Role), "invalid role"),
 });
 
 const signInSchema = object({
@@ -28,7 +28,7 @@ const signInSchema = object({
     .required()
     .matches(
       /^[a-zA-Z0-9_]*$/,
-      "Username must contain alphanumeric characters"
+      "username must contain alphanumeric characters"
     ),
   password: string()
     .min(6)
@@ -36,7 +36,7 @@ const signInSchema = object({
     .required()
     .matches(
       /^[a-zA-Z0-9_]*$/,
-      "Password must contain alphanumeric characters"
+      "password must contain alphanumeric characters"
     ),
 });
 
@@ -44,9 +44,9 @@ const productSchema = object({
   name: string()
     .min(6)
     .max(20)
-    .matches(/^[A-Za-z\s]+$/, "Name can only contain alphabets and spaces")
-    .required("Name is required"),
-  price: number().min(1).required("Price is required"),
+    .matches(/^[A-Za-z\s]+$/, "name can only contain alphabets and spaces")
+    .required("name is required"),
+  price: number().min(1).required("price is required"),
   description: string().max(200),
   images: array(string().url()).max(8),
 });
