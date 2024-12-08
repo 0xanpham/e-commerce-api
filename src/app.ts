@@ -20,9 +20,9 @@ export class App {
     this.app.use(cors());
     this.app.use(unless("/payment/webhook", express.json()));
     this.app.use("/auth", authRouter);
-    this.app.use("/product", productRouter);
+    this.app.use("/products", productRouter);
     this.app.use("/payment", paymentRouter);
-    this.app.use("/inventory", inventoryRouter);
+    this.app.use("/inventories", inventoryRouter);
     this.app.get("/health", (req, res) => {
       res.status(200).send("Server is healthy");
     });

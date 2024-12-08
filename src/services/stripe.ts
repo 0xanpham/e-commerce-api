@@ -8,6 +8,10 @@ import { ClientSession } from "mongoose";
 
 const stripe = new Stripe(stripeSecretKey);
 
+async function getPrice(priceId: string) {
+  return stripe.prices.retrieve(priceId);
+}
+
 async function createProduct(
   name: string,
   price: number,
@@ -29,6 +33,10 @@ async function createProduct(
 
 async function getProducts(limit = 10, active = true) {
   return stripe.products.list({ limit, active });
+}
+
+async function getProduct(productId: string) {
+  return stripe.products.retrieve(productId);
 }
 
 async function createCheckoutSession(
@@ -98,7 +106,9 @@ function constructWebhookEvent(
 
 export {
   createProduct,
+  getPrice,
   getProducts,
+  getProduct,
   createCheckoutSession,
   fulfillCheckout,
   constructWebhookEvent,
