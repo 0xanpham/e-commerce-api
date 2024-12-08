@@ -185,7 +185,7 @@ describe("Inventory", function () {
   });
 
   it("Get user inventories", async function () {
-    let response = await request(app.app).get(`/inventory/${user._id}`);
+    let response = await request(app.app).get(`/inventories/${user._id}`);
     expect(response.status).toBe(200);
     let jsonResponse = JSON.parse(response.text);
     expect(jsonResponse.inventories).toHaveLength(2);
@@ -195,7 +195,7 @@ describe("Inventory", function () {
       quantity: 40,
     });
     const newId = new mongoose.Types.ObjectId().toString();
-    response = await request(app.app).get(`/inventory/${newId}`);
+    response = await request(app.app).get(`/inventories/${newId}`);
     jsonResponse = JSON.parse(response.text);
     expect(jsonResponse.inventories).toHaveLength(0);
   });
