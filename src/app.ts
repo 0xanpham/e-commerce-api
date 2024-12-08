@@ -4,10 +4,11 @@ import authRouter from "./routes/auth";
 import logger from "./utils/logger";
 import mongoose from "mongoose";
 import productRouter from "./routes/product";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 import paymentRouter from "./routes/payment";
 import { unless } from "./utils/helper";
 import inventoryRouter from "./routes/inventory";
+import { whitelist } from "./config/config";
 
 export class App {
   public app: Express;
@@ -17,7 +18,18 @@ export class App {
     this.connectDB(dbURI);
     this.app = express();
     this.port = port;
-    this.app.use(cors());
+    const corsOptions: CorsOptions | undefined = whitelist
+      ? {
+          origin: function (origin, callback) {
+            if (origin && whitelist!.indexOf(origin) !== -1) {
+              callback(null, true);
+            } else {
+              callback(new Error("Not allowed by CORS"));
+            }
+          },
+        }
+      : undefined;
+    this.app.use(cors(corsOptions));
     this.app.use(unless("/payment/webhook", express.json()));
     this.app.use("/auth", authRouter);
     this.app.use("/products", productRouter);

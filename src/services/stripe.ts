@@ -1,5 +1,9 @@
 import Stripe from "stripe";
-import { stripeSecretKey } from "../config/config";
+import {
+  stripeCancelUrl,
+  stripeSecretKey,
+  stripeSuccessUrl,
+} from "../config/config";
 import logger from "../utils/logger";
 import { Payment } from "../models/payment";
 import { HttpException } from "../exceptions/exception";
@@ -53,7 +57,8 @@ async function createCheckoutSession(
         },
       ],
       mode: "payment",
-      success_url: "http://localhost:3000",
+      success_url: stripeSuccessUrl,
+      cancel_url: stripeCancelUrl,
       client_reference_id: userId,
     });
     return session;
