@@ -5,7 +5,9 @@ import { docToPlainObj } from "../utils/helper";
 async function updateInventory(
   userId: string,
   productId: string,
+  productName: string,
   quantity: number,
+  image?: string,
   session?: ClientSession
 ): Promise<IInventory> {
   let inventory = await Inventory.findOne(
@@ -20,6 +22,8 @@ async function updateInventory(
     inventory = new Inventory({
       userId,
       productId,
+      productName,
+      image,
       quantity,
     });
     await inventory.save({ session });

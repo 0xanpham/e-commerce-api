@@ -92,10 +92,15 @@ async function fulfillCheckout(sessionId: string, session?: ClientSession) {
       userId: checkoutSession.client_reference_id,
     });
     await newPayment.save({ session });
+    const product = await getProduct(
+      checkoutSession.line_items?.data[0].price?.product.toString() || ""
+    );
     await updateInventory(
       checkoutSession.client_reference_id || "",
       checkoutSession.line_items?.data[0].price?.product.toString() || "",
+      product.name,
       checkoutSession.line_items?.data[0].quantity || 0,
+      product.images.length ? product.images[0] : undefined,
       session
     );
   }

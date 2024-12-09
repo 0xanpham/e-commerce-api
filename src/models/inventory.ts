@@ -4,6 +4,8 @@ export interface IInventory {
   _id: string;
   userId: string;
   productId: string;
+  productName: string;
+  image?: string;
   quantity: number;
 }
 
@@ -16,6 +18,14 @@ const inventorySchema = new mongoose.Schema(
     productId: {
       type: String,
       required: true,
+    },
+    productName: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: false,
     },
     quantity: {
       type: Number,

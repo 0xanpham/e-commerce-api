@@ -179,9 +179,9 @@ describe("Sign in", function () {
 
 describe("Inventory", function () {
   beforeAll(async () => {
-    await updateInventory(user._id!, "product_id_0", 10);
-    await updateInventory(user._id!, "product_id_1", 20);
-    await updateInventory(user._id!, "product_id_0", 30);
+    await updateInventory(user._id!, "product_id_0", "Product 0", 10, "image0");
+    await updateInventory(user._id!, "product_id_1", "Product 1", 20, "image1");
+    await updateInventory(user._id!, "product_id_0", "Product 0", 30, "image0");
   });
 
   it("Get user inventories", async function () {
@@ -193,6 +193,8 @@ describe("Inventory", function () {
       userId: user._id!,
       productId: "product_id_0",
       quantity: 40,
+      productName: "Product 0",
+      image: "image0",
     });
     const newId = new mongoose.Types.ObjectId().toString();
     response = await request(app.app).get(`/inventories/${newId}`);
