@@ -15,7 +15,9 @@ let server: Server;
 let app: App;
 let mongodbContainer: StartedMongoDBContainer;
 let token: string;
+let token2: string;
 let user: IUser;
+let user2: IUser;
 
 jest.setTimeout(120 * 1000);
 
@@ -94,6 +96,13 @@ describe("Sign up", function () {
       username: "joerogan",
       role: Role.Customer,
     });
+
+    response = await request(app.app).post("/auth/sign-up").send({
+      username: "iangarry",
+      password: "123456",
+    });
+    jsonResponse = JSON.parse(response.text);
+    token2 = jsonResponse.accessToken;
   });
 
   it("Duplicated username while signing up", async function () {
@@ -174,6 +183,7 @@ describe("Sign in", function () {
       username: "joerogan",
       role: Role.Customer,
     });
+    user2 = verifyToken(token2);
   });
 });
 
@@ -184,8 +194,21 @@ describe("Inventory", function () {
     await updateInventory(user._id!, "product_id_0", "Product 0", 30, "image0");
   });
 
-  it("Get user inventories", async function () {
-    let response = await request(app.app).get(`/inventories/${user._id}`);
+  it("Unauthorized inventories request", async function () {
+    let response = await request(app.app)
+      .get(`/inventories/${user._id}`)
+      .set("Authorization", token2);
+    expect(response.status).toBe(401);
+    let jsonResponse = JSON.parse(response.text);
+    expect(jsonResponse.message).toEqual(
+      "user can only view his/her own inventory"
+    );
+  });
+
+  it("Get user inventories successfully", async function () {
+    let response = await request(app.app)
+      .get(`/inventories/${user._id}`)
+      .set("Authorization", token);
     expect(response.status).toBe(200);
     let jsonResponse = JSON.parse(response.text);
     expect(jsonResponse.inventories).toHaveLength(2);
@@ -196,8 +219,9 @@ describe("Inventory", function () {
       productName: "Product 0",
       image: "image0",
     });
-    const newId = new mongoose.Types.ObjectId().toString();
-    response = await request(app.app).get(`/inventories/${newId}`);
+    response = await request(app.app)
+      .get(`/inventories/${user2._id}`)
+      .set("Authorization", token2);
     jsonResponse = JSON.parse(response.text);
     expect(jsonResponse.inventories).toHaveLength(0);
   });
