@@ -15,3 +15,11 @@ This is a REST API for an ecommerce website, designed to handle essential ecomme
 ## Live Demo
 
 Visit [Live Demo](https://e-commerce-web-chi-nine.vercel.app) to interact with the API through a simple web interface.
+
+Click the `Buy` button to be redirected to the Stripe Checkout page. Use any of these test cards to simulate a payment.
+
+Payment succeeds: `4242 4242 4242 4242`
+
+Payment requires authentication: `4000 0025 0000 3155`
+
+Payment is declined: `4000 0000 0000 9995`
